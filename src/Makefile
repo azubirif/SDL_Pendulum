@@ -1,4 +1,4 @@
 CC = gcc
 
-main: main.c
-	$(CC) main.c -o pendulum -lSDL2 -lm
+azPendulum: azPendulum.c
+	$(CC) azPendulum.c -o azPendulum -lSDL2 -lm

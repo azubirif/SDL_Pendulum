@@ -7,12 +7,13 @@
 // Defines
 #define WINDOW_WIDTH 800
 #define WINDOW_HEIGHT 600
-#define G 50
+#define G 9.8
 #define PI 3.14159265358979323846
 #define OMEGA_0 0
 #define THETA_0 PI/4
 #define L 200
 #define STEP 0.016 //En segundos
+#define UNITS_PER_METER 100 //Cuantas unidades corresponden a un metro
 
 void drawCircle(SDL_Renderer *renderer, int x0, int y0, int r)
 {
@@ -91,7 +92,7 @@ void updatePendulum(double *x, double *y, double *theta, double *omega)
 	//Actualizamos la posición del pendulo acorde a las EDOs
 	//OMEGA_I+1 = OMEGA_I -h G/l sin (THETA_I)
 	//THETA_I+1 = THETA_I + h * OMEGA_I
-	*omega = *omega -(STEP * G * sin(*theta)) / L;
+	*omega = *omega -(STEP * G * sin(*theta)) / (L/UNITS_PER_METER);
 	*theta = *theta + STEP * *omega;
 
 	//Ahora calculamos los nuevos valores de x e y;
@@ -146,6 +147,8 @@ int main(int argc, char *argv[]) {
         SDL_Quit();
         return 1;
     }
+
+    double newTime = SDL_GetTicks(), oldTime;
 
     // Main loop
     while (!quit) {
@@ -214,6 +217,12 @@ int main(int argc, char *argv[]) {
 		
 		//Debug
 		//printf("r teorica: %d. r real: %.3f\n", L, sqrt(pow(x- 400, 2) + pow(y - 300, 2)));
+
+        //Cálculo de FPS
+        oldTime = newTime;
+        newTime = SDL_GetTicks();
+
+        printf("FPS: %.3f\n", 1000/(newTime-oldTime));
     }
 
     // Clean up
